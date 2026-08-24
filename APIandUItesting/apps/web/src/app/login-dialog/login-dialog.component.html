@@ -1,0 +1,54 @@
+<div class="login-overlay" data-testid="login-overlay" (click)="onOverlayClick($event)">
+  <div class="login-dialog" data-testid="login-dialog" role="dialog" aria-modal="true" aria-labelledby="login-title">
+    <button type="button" class="close-button" data-testid="login-close" aria-label="Close" (click)="onClose()">&times;</button>
+
+    <h2 id="login-title" data-testid="login-title">Login</h2>
+
+    <form (ngSubmit)="onSubmit()">
+      <div class="field">
+        <label for="username" data-testid="username-label">Username</label>
+        <input
+          id="username"
+          name="username"
+          type="text"
+          data-testid="username-input"
+          [(ngModel)]="username"
+          autocomplete="username"
+          required
+        />
+      </div>
+
+      <div class="field">
+        <label for="password" data-testid="password-label">Password</label>
+        <input
+          id="password"
+          name="password"
+          type="password"
+          data-testid="password-input"
+          [(ngModel)]="password"
+          autocomplete="current-password"
+          required
+        />
+      </div>
+
+      @if (errorMessage) {
+        <p class="error-message" data-testid="login-error">{{ errorMessage }}</p>
+      }
+
+      @if (infoMessage) {
+        <p class="info-message" data-testid="login-info">{{ infoMessage }}</p>
+      }
+
+      <button type="submit" class="login-submit" data-testid="login-submit">Login</button>
+    </form>
+
+    <div class="dialog-links">
+      <button type="button" class="link-button" data-testid="forgot-password-button" (click)="onForgotPassword()">
+        Forgot password?
+      </button>
+      <button type="button" class="link-button" data-testid="register-button" (click)="onRegister()">
+        Register
+      </button>
+    </div>
+  </div>
+</div>

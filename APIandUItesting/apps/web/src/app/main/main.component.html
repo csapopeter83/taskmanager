@@ -1,0 +1,35 @@
+<header class="top-bar">
+  <span class="brand">TaskManager</span>
+  <button type="button" class="login-button" data-testid="open-login-button" (click)="openLogin()">
+    Login
+  </button>
+</header>
+
+<main class="content" data-testid="main-content">
+  <h1>Welcome to Task Manager</h1>
+  <p>
+    This is a demo landing page. Organize your work, track progress, and stay on top of
+    deadlines &mdash; all in one place.
+  </p>
+
+  <section class="feature-grid">
+    <article class="feature-card">
+      <h2>Plan</h2>
+      <p>Break big goals into small, manageable tasks.</p>
+    </article>
+    <article class="feature-card">
+      <h2>Track</h2>
+      <p>See what's done, what's in progress, and what's next.</p>
+    </article>
+    <article class="feature-card">
+      <h2>Deliver</h2>
+      <p>Hit deadlines with a clear view of your workload.</p>
+    </article>
+  </section>
+
+  <p class="cta">Log in to access your personal dashboard.</p>
+</main>
+
+@if (showLoginDialog) {
+  <app-login-dialog (closed)="closeLogin()" (loggedIn)="onLoggedIn()"></app-login-dialog>
+}

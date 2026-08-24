@@ -1,0 +1,89 @@
+<header class="top-bar">
+  <span class="brand">TaskManager</span>
+  <button type="button" class="logout-button" data-testid="logout-button" (click)="logout()">
+    Logout
+  </button>
+</header>
+
+<main class="content" data-testid="dashboard-content">
+  <h1 data-testid="dashboard-heading">Dashboard</h1>
+
+  @if (errorMessage) {
+    <p class="error-message" data-testid="tasks-error">{{ errorMessage }}</p>
+  }
+
+  <section class="new-task" data-testid="new-task-form">
+    <input
+      type="text"
+      placeholder="Title"
+      data-testid="new-task-title"
+      [(ngModel)]="newTitle"
+    />
+    <input
+      type="text"
+      placeholder="Description"
+      data-testid="new-task-description"
+      [(ngModel)]="newDescription"
+    />
+    <button type="button" data-testid="add-task-button" (click)="addTask()">Add</button>
+  </section>
+
+  <section class="tasks-section">
+    @if (loading) {
+      <p data-testid="tasks-loading">Loading tasks&hellip;</p>
+    } @else if (tasks.length === 0) {
+      <p data-testid="no-tasks">No tasks yet.</p>
+    } @else {
+      <table class="tasks-table" data-testid="tasks-table">
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Created</th>
+            <th>Modified</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (task of tasks; track task.id) {
+            <tr data-testid="task-row">
+              <td>
+                <div class="cell-text" data-testid="task-id">{{ task.id }}</div>
+              </td>
+              <td>
+                <input type="text" data-testid="task-title-input" [(ngModel)]="task.title" />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  data-testid="task-description-input"
+                  [(ngModel)]="task.description"
+                />
+              </td>
+              <td>
+                <div class="cell-text">{{ task.creationDate | date: 'short' }}</div>
+              </td>
+              <td>
+                <div class="cell-text">{{ task.modificationDate | date: 'short' }}</div>
+              </td>
+              <td class="actions">
+                <button type="button" data-testid="update-task-button" (click)="updateTask(task)">
+                  Update
+                </button>
+                <button
+                  type="button"
+                  class="danger"
+                  data-testid="delete-task-button"
+                  (click)="deleteTask(task.id)"
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </section>
+</main>
