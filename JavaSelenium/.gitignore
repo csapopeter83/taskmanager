@@ -1,0 +1,6 @@
+target/
+.env
+screenshots/
+*.iml
+.vscode/
+*.log
