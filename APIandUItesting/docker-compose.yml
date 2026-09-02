@@ -1,0 +1,51 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: docker/api.Dockerfile
+    ports:
+      - "3000:3000"
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/health', r => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  web:
+    build:
+      context: .
+      dockerfile: docker/web.Dockerfile
+    ports:
+      - "4200:80"
+    environment:
+      # Reachable from other containers on this compose network (the "tests" service, and web's
+      # own client-side JS running inside that container's browser). Not reachable if you open
+      # http://localhost:4200 directly in your host browser instead — that's a separate use case
+      # from running the e2e suites in Docker, and still works via `pnpm dev` locally.
+      API_BASE_URL: http://api:3000
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:80"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  tests:
+    build:
+      context: .
+      dockerfile: docker/tests.Dockerfile
+    environment:
+      API_BASE_URL: http://api:3000
+      WEB_BASE_URL: http://web
+    depends_on:
+      api:
+        condition: service_healthy
+      web:
+        condition: service_healthy
+    volumes:
+      - ./apps/api/e2e/playwright-report:/repo/apps/api/e2e/playwright-report
+      - ./apps/api/e2e/test-results:/repo/apps/api/e2e/test-results
+      - ./apps/web-e2e/playwright-report:/repo/apps/web-e2e/playwright-report
+      - ./apps/web-e2e/test-results:/repo/apps/web-e2e/test-results
