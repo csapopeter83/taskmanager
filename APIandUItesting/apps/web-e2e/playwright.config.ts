@@ -6,7 +6,8 @@ import type { TestOptions } from './tests/types';
 config({ path: path.resolve(__dirname, '.env') });
 
 const PORT = 4200;
-const BASE_URL = `http://localhost:${PORT}`;
+
+const BASE_URL = process.env.WEB_BASE_URL ?? `http://localhost:${PORT}`;
 
 export default defineConfig<TestOptions>({
   testDir: './tests',
@@ -20,20 +21,22 @@ export default defineConfig<TestOptions>({
     language: 'en',
   },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
-  webServer: [
-    {
-      command: 'pnpm exec ng serve --port 4200',
-      cwd: '../web',
-      url: BASE_URL,
-      reuseExistingServer: !process.env.CI,
-      timeout: 120_000,
-    },
-    {
-      command: 'pnpm exec nest start',
-      cwd: '../api',
-      url: 'http://localhost:3000/health',
-      reuseExistingServer: !process.env.CI,
-      timeout: 60_000,
-    },
-  ],
+  webServer: process.env.WEB_BASE_URL
+    ? undefined
+    : [
+        {
+          command: 'pnpm exec ng serve --port 4200',
+          cwd: '../web',
+          url: BASE_URL,
+          reuseExistingServer: !process.env.CI,
+          timeout: 120_000,
+        },
+        {
+          command: 'pnpm exec nest start',
+          cwd: '../api',
+          url: 'http://localhost:3000/health',
+          reuseExistingServer: !process.env.CI,
+          timeout: 60_000,
+        },
+      ],
 });

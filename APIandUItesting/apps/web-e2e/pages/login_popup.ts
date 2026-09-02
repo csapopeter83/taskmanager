@@ -1,3 +1,4 @@
+import { LogAction } from '../annotations/log-action';
 import { User } from '../tests/types';
 import { BasePage } from './base_page';
 
@@ -24,6 +25,7 @@ export class LoginPopup extends BasePage {
   registerButton = this.page.getByTestId(LOGIN_POPUP_TEST_IDS.registerButton);
   loginError = this.page.getByTestId(LOGIN_POPUP_TEST_IDS.loginError);
 
+  @LogAction
   async login(user: User): Promise<void> {
     await this.usernameInput.fill(user?.name);
     await this.passwordInput.fill(user?.password);
